@@ -45,9 +45,28 @@ namespace api.Controllers
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
             var stockModel = stockDto.ToStockFromCreateDto();
-             await _context.Stocks.AddAsync(stockModel);
-             await _context.SaveChangesAsync();
-             return  CreatedAtAction(nameof(GetById),new{id=stockModel.Id}, stockModel.ToStockDto());
+            await _context.Stocks.AddAsync(stockModel);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+        {
+            var stock = await _context.Stocks.FirstOrDefaultAsync(i => i.Id == id);
+            if (stock == null)
+            {
+                return NotFound();
+            }
+            stock.Symbol = updateDto.Symbol;
+            stock.CompanyName = updateDto.CompanyName;
+            stock.Purchase = updateDto.Purchase;
+            stock.LastDiv = updateDto.LastDiv;
+            stock.Industry = updateDto.Industry;
+            stock.MarketCap = updateDto.MarketCap;
+
+            await _context.SaveChangesAsync();
+            return Ok(stock.ToStockDto());
         }
 
     }
