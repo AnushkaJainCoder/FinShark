@@ -23,5 +23,20 @@ namespace api.Mappers
 
             };
         }
+
+        public static StockModel ToStockFromCreateDto(this CreateStockRequestDto createStockRequestDto)
+        {
+            return new StockModel
+            {
+                Symbol = createStockRequestDto.Symbol,
+                CompanyName = createStockRequestDto.CompanyName,
+                Purchase = createStockRequestDto.Purchase,
+                LastDiv = createStockRequestDto.LastDiv,
+                MarketCap = createStockRequestDto.MarketCap,
+                Industry = createStockRequestDto.Industry
+            };
+        }
     }
 }
+
+// Without mappers, your API wouldn't automatically know how to turn a StockModel (your database entity) into a StockDto
