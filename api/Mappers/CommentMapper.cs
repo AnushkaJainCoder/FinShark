@@ -32,5 +32,16 @@ namespace api.Mappers
 
             };
         }
+
+          public static CommentModel ToCommentFromUpdate(this UpdateCommentDto commentDto)
+        {
+            return new CommentModel
+            {
+
+                Title = commentDto.Title,
+                Content = commentDto.Content,
+
+            };
+        }
     }
 }

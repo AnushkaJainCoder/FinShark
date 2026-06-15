@@ -42,6 +42,7 @@ namespace api.Repository
             return await _context.Stocks.Include(x=>x.Comments).ToListAsync();
         }
 
+        // EF core ignore child tables(sub tables) by default so to include those we used it Include keyword.
         public async Task<StockModel?> GetByIdAsync(int id)
         {
 

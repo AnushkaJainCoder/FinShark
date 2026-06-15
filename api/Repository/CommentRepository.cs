@@ -22,7 +22,7 @@ namespace api.Repository
             return await _context.Comments.ToListAsync();
         }
 
-        public async Task<CommentModel> GetByIdAsync(int id)
+        public async Task<CommentModel?> GetByIdAsync(int id)
         {
             var comment = await _context.Comments.FindAsync(id);
             if(comment == null)
@@ -32,13 +32,27 @@ namespace api.Repository
             return comment;
         }
 
-        public async Task<CommentModel> CreateAsync(CommentModel commentModel)
+        public async Task<CommentModel?> CreateAsync(CommentModel commentModel)
         {
             // var stock = _context.Stocks.FindAsync(stockId);
             await _context.Comments.AddAsync(commentModel);
             await _context.SaveChangesAsync();
             return commentModel;
            
+        }
+
+        public async Task<CommentModel?> UpdateAsync(int id, CommentModel commentModel)
+        {
+            var comment =  _context.Comments.FirstOrDefault(x=>x.Id==id);
+            if(comment == null)
+            {
+                return null;
+            }
+            comment.Title = commentModel.Title;
+            comment.Content = commentModel.Content;
+
+            await _context.SaveChangesAsync();
+            return comment;
         }
 
        
