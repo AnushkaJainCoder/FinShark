@@ -42,7 +42,7 @@ namespace api.Repository
         public async Task<List<StockModel>> GetAllAsync(QueryObject queryObject)
         {
             var stock =   _context.Stocks.Include(x=>x.Comments).AsQueryable();
-            
+
             if (!string.IsNullOrWhiteSpace(queryObject.CompanyName))
             {
                 stock = stock.Where(s=>s.CompanyName.Contains( queryObject.CompanyName));
@@ -61,7 +61,9 @@ namespace api.Repository
                 }
             }
 
-            return await stock.ToListAsync();
+            var skipNumber = (queryObject.PageNumber -1)* queryObject.PageSize;
+
+            return await stock.Skip(skipNumber).Take(queryObject.PageSize).ToListAsync();
         }
 
         // EF core ignore child tables(sub tables) by default so to include those we used it Include keyword.
