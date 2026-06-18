@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.DTO.Stock;
+using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace api.Repository
 {
@@ -37,9 +39,18 @@ namespace api.Repository
             return stock;
         }
 
-        public async Task<List<StockModel>> GetAllAsync()
+        public async Task<List<StockModel>> GetAllAsync(QueryObject queryObject)
         {
-            return await _context.Stocks.Include(x=>x.Comments).ToListAsync();
+            var stock =   _context.Stocks.Include(x=>x.Comments).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(queryObject.CompanyName))
+            {
+                stock = stock.Where(s=>s.CompanyName.Contains( queryObject.CompanyName));
+            }
+            if (!string.IsNullOrWhiteSpace(queryObject.Symbol))
+            {
+                stock = stock.Where(s=>s.Symbol.Contains( queryObject.Symbol));
+            }
+            return await stock.ToListAsync();
         }
 
         // EF core ignore child tables(sub tables) by default so to include those we used it Include keyword.
